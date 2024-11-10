@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" id="close-btn">X</button>
+        <h2>Job Portal</h2>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job.html">Jobs</a></li>
+            <li><a href="register.html">Sign in option</a></li>
+            <li><a href="message/message.html">Messages</a></li>
+        </ul>
+    </div>
+
+    <!-- Button to Open Sidebar on Small Screens -->
+    <button class="open-btn" id="open-btn">☰</button>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <div class="navbar">
+            <input type="text" id="jobSearch" placeholder="Search for jobs...">
+            <button onclick="searchJobs()" class="searchbtn">Search</button>
+        </div>
+
+        <!-- Job Listings -->
+        <div id="jobList" class="job-list">
+            <!-- Job items will be dynamically added here -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

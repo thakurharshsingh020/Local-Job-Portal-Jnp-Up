@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Job</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .jobs-list {
+            margin-top: 30px;
+        }
+
+        .job-item {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-left: 15px;
+            border-radius: 5px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Submit a Job</h1>
+        <!-- Form for submitting the job -->
+        <form id="job-form">
+            <label for="title">Job Title:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="description">Job Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+
+            <button type="submit">Submit Job</button>
+        </form>
+
+        <div id="response" class="response"></div>
+
+        <!-- Display previously submitted jobs -->
+        <div class="jobs-list" id="jobs-list">
+            <h2>Previously Submitted Jobs:</h2>
+            <div id="job-items"></div>
+        </div>
+    </div>
+
+    <script>
+        // Function to load all jobs from localStorage and display them
+        function loadJobs() {
+            const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+            const jobItems = document.getElementById('job-items');
+            jobItems.innerHTML = ''; // Clear previous jobs
+
+            jobs.forEach((job, index) => {
+                const jobDiv = document.createElement('div');
+                jobDiv.classList.add('job-item');
+                jobDiv.innerHTML = `<strong>Job Title:</strong> ${job.title} <br><strong>Description:</strong> ${job.description}`;
+                
+                // Create a Delete button for each job
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.addEventListener('click', () => deleteJob(index));
+
+                jobDiv.appendChild(deleteButton);
+                jobItems.appendChild(jobDiv);
+            });
+        }
+
+        // Load jobs when the page loads
+        loadJobs();
+
+        // JavaScript to handle form submission using Fetch API
+        document.getElementById('job-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+
+            // Create an object to store the data
+            const jobData = { title: title, description: description };
+
+            // Save the job data in localStorage
+            const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+            jobs.push(jobData);
+            localStorage.setItem('jobs', JSON.stringify(jobs));
+
+            // Optional: send the data to a backend URL
+            const submitUrl = 'https://your-server-url.com/submit-job';  // Replace with your actual URL
+
+            fetch(submitUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jobData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('response').innerHTML = `<p class="success">Job submitted successfully!</p>`;
+                } else {
+                    document.getElementById('response').innerHTML = `<p class="error">Failed to submit job. Please try again.</p>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('response').innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            });
+
+            // Load the updated list of jobs
+            loadJobs();
+
+            // Reset the form after submission
+            document.getElementById('job-form').reset();
+        });
+
+        // Function to delete a job by index
+        function deleteJob(index) {
+            const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+            jobs.splice(index, 1); // Remove the job at the specified index
+            localStorage.setItem('jobs', JSON.stringify(jobs)); // Save the updated job list to localStorage
+            loadJobs(); // Reload the job list
+        }
+    </script>
+</body>
+</html>

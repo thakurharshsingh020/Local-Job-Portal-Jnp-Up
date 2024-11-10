@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login and Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
+
+    h1, h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      color: #555;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .form-container {
+      display: none;
+    }
+
+    #signup-form {
+      display: block;
+    }
+
+    .toggle-form {
+      margin-top: 15px;
+    }
+
+    .profile-link {
+      margin-top: 20px;
+      font-size: 18px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+
+    .profile-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Popup styles */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      z-index: 1000;
+    }
+
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Login / Sign Up</h1>
+    
+    <!-- Sign Up Form -->
+    <div id="signup-form" class="form-container">
+      <h2>Sign Up</h2>
+      <form id="signup">
+        <div class="form-group">
+          <label for="signup-username">Username:</label>
+          <input type="text" id="signup-username" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password:</label>
+          <input type="password" id="signup-password" required>
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p class="toggle-form">Already have an account? <a href="javascript:void(0);" onclick="toggleForm()">Login</a></p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-form" class="form-container">
+      <h2>Login</h2>
+      <form id="login">
+        <div class="form-group">
+          <label for="login-username">Username:</label>
+          <input type="text" id="login-username" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password:</label>
+          <input type="password" id="login-password" required>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <p class="toggle-form">Don't have an account? <a href="javascript:void(0);" onclick="toggleForm()">Sign Up</a></p>
+    </div>
+
+    <a id="profile-link" class="profile-link" href="Author.html" style="display: none;">Go to Author Profile</a>
+  </div>
+
+  <!-- Popup -->
+  <div id="popup-overlay" class="popup-overlay"></div>
+  <div id="popup" class="popup">
+    <h2>Welcome, Harsh!</h2>
+    <p>You're logged in as an author. Click below to access add or remove Jobs:</p>
+    <a href="Author.html" class="profile-link">Go to Author Resources</a>
+    <br><br>
+    <button onclick="closePopup()">Close</button>
+  </div>
+
+  <script>
+    // Hard-coded author credentials
+    const authorAccounts = [
+      { username: 'rajeev786singh', password: 'Rajeev123' },
+      { username: 'thakurharshsingh', password: 'harsh@321' }
+    ];
+
+    // Switch between forms (Login/SignUp)
+    function toggleForm() {
+      const signupForm = document.getElementById('signup-form');
+      const loginForm = document.getElementById('login-form');
+      if (signupForm.style.display === "none") {
+        signupForm.style.display = "block";
+        loginForm.style.display = "none";
+      } else {
+        signupForm.style.display = "none";
+        loginForm.style.display = "block";
+      }
+    }
+
+    // Handle Sign Up Form Submission
+    document.getElementById('signup').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('signup-username').value;
+      const password = document.getElementById('signup-password').value;
+
+      // Save the new user to localStorage
+      localStorage.setItem('username', username);
+      localStorage.setItem('password', password);
+
+      alert('Sign up successful! You can now login.');
+
+      // Automatically switch to login form
+      toggleForm();
+    });
+
+    // Handle Login Form Submission
+    document.getElementById('login').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      let userFound = false;
+
+      // Check if the user is an author (hardcoded accounts)
+      authorAccounts.forEach(author => {
+        if (author.username === username && author.password === password) {
+          userFound = true;
+          showPopup(); // Show the popup for author login
+        }
+      });
+
+      // Check localStorage for general user credentials
+      if (!userFound) {
+        const savedUsername = localStorage.getItem('username');
+        const savedPassword = localStorage.getItem('password');
+        if (username === savedUsername && password === savedPassword) {
+          userFound = true;
+          alert('Login successful!');
+          document.getElementById('profile-link').style.display = 'none'; // Hide profile link for general users
+          window.location.href = 'index.html'; // Redirect to index.html for general users
+        }
+      }
+
+      // If no valid credentials, show error
+      if (!userFound) {
+        alert('Invalid credentials, please try again.');
+      }
+    });
+
+    // Show Popup for author login
+    function showPopup() {
+      document.getElementById('popup').style.display = 'block';
+      document.getElementById('popup-overlay').style.display = 'block';
+    }
+
+    // Close Popup
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
+      document.getElementById('popup-overlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

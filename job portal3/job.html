@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal - All Jobs</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #283e4a;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            color: #1b76d3;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding-top: 20px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            transition: background 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #1b76d3;
+        }
+
+        .searchbtn {
+            background-color: #1b76d3;
+            color: white;
+            transition: 0.5s ease-in;
+            height: 40px;
+            width: 80px;
+            border: none;
+        }
+
+        .searchbtn:hover {
+            background-color: white;
+            color: #1b76d3;
+            border: 1px solid #1b76d3;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            flex: 1;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .navbar input[type="text"] {
+            padding: 8px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .job-list {
+            margin-top: 20px;
+        }
+
+        .job-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .job-item a {
+            padding: 8px 20px;
+            color: white;
+            background-color: #1b76d3;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 1.5s;
+        }
+
+        .job-item a:hover {
+            color: #1b76d3;
+            background: white;
+            border: 1px solid #1b76d3;
+        }
+
+/* General Sidebar Style */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #283e4a;
+    color: white;
+    padding: 20px;
+    display: block;
+    transform: translateX(-100%);
+    /* Initially hide sidebar on small screens */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Sidebar list style */
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.open-btn {
+    display: none;
+    /* Hide open button by default */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 30px;
+    background-color: transparent;
+    border: none;
+    color: #283e4a;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* Button to close sidebar */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: red;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Large screens: Sidebar is visible by default */
+@media (min-width: 769px) {
+    .sidebar {
+        transform: translateX(0);
+        /* Sidebar stays visible */
+    }
+
+    .open-btn {
+        display: none;
+        /* Hide the open button on large screens */
+    }
+}
+
+/* Small screens: Sidebar is hidden and can be toggled */
+@media (max-width: 768px) {
+    .open-btn {
+        display: block;
+        /* Show the open button on small screens */
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+        /* Slide in the sidebar */
+    }
+}
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" id="close-btn">X</button>
+        <h2>Job Portal</h2>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job.html">Jobs</a></li>
+            <li><a href="register.html">Sign in option</a></li>
+            <li><a href="message/message.html">Messages</a></li>
+        </ul>
+    </div>
+
+    <!-- Button to Open Sidebar on Small Screens -->
+    <button class="open-btn" id="open-btn">☰</button>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <div class="navbar">
+            <input type="text" id="jobSearch" placeholder="Search for jobs...">
+            <button onclick="searchJobs()" class="searchbtn">Search</button>
+        </div>
+
+        <!-- Job Listings -->
+        <div id="jobList" class="job-list">
+            <!-- Job items will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        // Dummy job data
+        const jobs = [
+            { title: "Teacher", description: "Teacher For Mathematics" },
+            { title: "Teacher", description: "Teacher For ART" },
+            { title: "Teacher", description: "Teacher For Science" },
+            { title: "Teacher", description: "Teacher For So. STudy" },
+            { title: "Teacher", description: "Teacher For Mo. Science" },
+        ];
+
+        // Load jobs on page load
+        document.addEventListener("DOMContentLoaded", loadJobs);
+
+        function loadJobs() {
+            const jobList = document.getElementById("jobList");
+            jobList.innerHTML = "";
+            jobs.forEach((job, index) => {
+                const jobItem = document.createElement("div");
+                jobItem.classList.add("job-item");
+                jobItem.innerHTML = `<h3>${job.title}</h3><br><p>${job.description}</p><br>
+                <a href="apply form.html" onclick="applyForJob(${index})">Apply</a>`;
+                jobList.appendChild(jobItem);
+            });
+        }
+
+        function searchJobs() {
+            const query = document.getElementById("jobSearch").value.toLowerCase();
+            const filteredJobs = jobs.filter(job => job.title.toLowerCase().includes(query));
+            displayJobs(filteredJobs);
+        }
+
+        function displayJobs(filteredJobs) {
+            const jobList = document.getElementById("jobList");
+            jobList.innerHTML = "";
+            if (filteredJobs.length > 0) {
+                filteredJobs.forEach((job, index) => {
+                    const jobItem = document.createElement("div");
+                    jobItem.classList.add("job-item");
+                    jobItem.innerHTML = `<h3>${job.title}</h3><p>${job.description}</p>
+                        <button onclick="applyForJob(${index})">Apply</button>`;
+                    jobList.appendChild(jobItem);
+                });
+            } else {
+                jobList.innerHTML = "<p>No jobs found</p>";
+            }
+        }
+
+        function applyForJob(index) {
+            const job = jobs[index];
+            alert(`Applied for ${job.title}`);
+            sendApplicationEmail(job.title);
+        }
+
+        // Optional: Function to send email
+        function sendApplicationEmail(jobTitle) {
+            // Here you would integrate with your backend service to send an email.
+            // Example backend: Node.js with Nodemailer.
+            console.log(`Sending email for job: ${jobTitle}`);
+        }
+
+        // Get the elements
+const openBtn = document.getElementById('open-btn');
+const closeBtn = document.getElementById('close-btn');
+const sidebar = document.getElementById('sidebar');
+
+// Open the sidebar when the open button is clicked
+openBtn.addEventListener('click', () => {
+    sidebar.classList.add('active');
+});
+
+// Close the sidebar when the close button is clicked
+closeBtn.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+});
+
+
+    </script>
+</body>
+
+</html>

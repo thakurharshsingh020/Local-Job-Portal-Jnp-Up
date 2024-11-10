@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Application Form</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="file"],
+    button {
+      margin-top: 8px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    button {
+      margin-top: 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #resume-preview {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #495057;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #success-message {
+      text-align: center;
+      font-size: 18px;
+      color: #28a745;
+      margin-top: 20px;
+    }
+
+    #error-message {
+      text-align: center;
+      font-size: 16px;
+      color: #dc3545;
+      margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="job-application-form" action="https://api.web3forms.com/submit" method="POST"action="https://api.web3forms.com/submit" method="POST">
+      <h2>Apply for Job</h2>
+      <label for="name">Name</label>
+      <input type="hidden" name="access_key" value="7a6e99c6-5e63-4c18-ae43-d03e1448d8a3">
+      <input type="text" id="name" name="name" required>
+
+      <label for="name">Father Name</label>
+      <input type="text" id="name" name="father name" required>
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="name">Subject</label>
+      <input type="text" id="email" name="subject" required>
+
+      <label for="resume">Resume</label>
+      <input type="file" id="resume" name="resume" accept=".pdf, .doc, .docx" onchange="previewResume()" required>
+      <div id="resume-preview"></div>
+
+      <button type="submit">Submit Application</button>
+    </form>
+    <div id="success-message" class="hidden">Thank you! Your application has been submitted.</div>
+    <div id="error-message" class="hidden">You have reached the maximum submissions. Please try again after 24 hours.</div>
+  </div>
+
+  <script>
+    const form = document.getElementById("job-application-form");
+    const successMessage = document.getElementById("success-message");
+    const errorMessage = document.getElementById("error-message");
+
+    function previewResume() {
+      const resumeInput = document.getElementById("resume");
+      const preview = document.getElementById("resume-preview");
+      
+      if (resumeInput.files && resumeInput.files[0]) {
+        preview.textContent = `Selected File: ${resumeInput.files[0].name}`;
+      }
+    }
+
+    function checkSubmissionLimit() {
+      const now = new Date().getTime();
+      const firstSubmissionTime = localStorage.getItem("firstSubmissionTime");
+      const submissionCount = localStorage.getItem("submissionCount") || 0;
+
+      if (firstSubmissionTime && now - firstSubmissionTime < 24 * 60 * 60 * 1000) {
+        if (submissionCount >= 3) {
+          return false;
+        }
+      } else {
+        // Reset after 24 hours
+        localStorage.setItem("firstSubmissionTime", now);
+        localStorage.setItem("submissionCount", 0);
+      }
+
+      return true;
+    }
+
+    function updateSubmissionCount() {
+      let submissionCount = localStorage.getItem("submissionCount") || 0;
+      submissionCount++;
+      localStorage.setItem("submissionCount", submissionCount);
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (checkSubmissionLimit()) {
+        // Display success message
+        form.classList.add("hidden");
+        successMessage.classList.remove("hidden");
+
+        // Update submission count
+        updateSubmissionCount();
+        
+        // Here you can add backend code to send the form data via email
+      } else {
+        // Show error message if submission limit is reached
+        form.classList.add("hidden");
+        errorMessage.classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
